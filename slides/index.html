@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Agent 是什麼</title>
+<style>
+:root{--bg:#f7f6f2;--card:#ffffff;--ink:#1d1d1f;--muted:#5f6368;--accent:#c2410c;--accent2:#0f766e;--line:#e4e2dc;--code:#f1efe9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1f2026;--ink:#ececec;--muted:#a3a6ad;--accent:#fb923c;--accent2:#2dd4bf;--line:#33353d;--code:#2a2b31}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1f2026;--ink:#ececec;--muted:#a3a6ad;--accent:#fb923c;--accent2:#2dd4bf;--line:#33353d;--code:#2a2b31}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.6}
+.deck{max-width:1000px;margin:0 auto;padding:16px}
+section{display:none;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:clamp(20px,4vw,48px);min-height:min(78vh,620px)}
+section.on{display:block}
+h1{font-size:clamp(28px,5vw,46px);margin:.2em 0}
+h2{font-size:clamp(22px,3.6vw,32px);margin:0 0 .6em;color:var(--accent)}
+p,li{font-size:clamp(16px,2.2vw,20px)}
+.kicker{color:var(--muted);font-size:15px;letter-spacing:.05em}
+.quote{border-left:4px solid var(--accent2);background:var(--code);padding:10px 14px;border-radius:6px;font-size:15px;color:var(--muted);margin:14px 0}
+.src{font-size:13px;color:var(--muted);margin-top:18px;border-top:1px dashed var(--line);padding-top:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.box{border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg)}
+.box b{color:var(--accent2)}
+table{border-collapse:collapse;width:100%;font-size:clamp(14px,2vw,18px)}
+td,th{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}
+th{background:var(--code)}
+.loop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:18px 0}
+.step{background:var(--accent);color:#fff;padding:10px 16px;border-radius:999px;font-weight:700}
+.arrow{color:var(--muted);font-size:22px}
+details{border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
+summary{cursor:pointer;font-weight:700}
+nav{display:flex;gap:8px;align-items:center;justify-content:center;margin:12px 0}
+button{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px 16px;font-size:16px;cursor:pointer}
+#count{color:var(--muted);min-width:70px;text-align:center}
+.bar{height:4px;background:var(--line);border-radius:2px;overflow:hidden}.bar i{display:block;height:100%;background:var(--accent);width:0}
+</style>
+</head>
+<body>
+<div class="deck">
+<div class="bar"><i id="prog"></i></div>
+
+<section data-wiki="index">
+<p class="kicker">教學簡報 · 給完全沒接觸過的人</p>
+<h1>AI Agent 是什麼？</h1>
+<p>從「會聊天的 AI」到「會自己動手做事的 AI」</p>
+<p class="src">內容全部來自本人整理的 AI Agent 知識庫（6 篇資料、14 頁 wiki）。每頁下方標註出處。用鍵盤 ← → 或下方按鈕換頁。</p>
+</section>
+
+<section data-wiki="index">
+<h2>這堂課你會學到</h2>
+<ol><li>AI Agent 的一句話定義</li><li>Agent 怎麼運作：迴圈＋工具</li><li>Workflow 和 Agent 有什麼不同</li><li>進階：AI 一次能記住多少、多個 AI 分工、做很久的任務</li><li>什麼時候「不該」用 Agent</li></ol>
+</section>
+
+<section data-wiki="什麼是AI-Agent" data-facts="LLM（大型語言模型）">
+<h2>先認識主角：LLM</h2>
+<p><b>LLM（大型語言模型）</b>：像 ChatGPT、Claude 這種「讀文字、寫文字」的 AI。</p>
+<div class="grid"><div class="box"><b>一般聊天</b><br>你問一句，它答一句，就結束。</div><div class="box"><b>AI Agent</b><br>拿到一個目標後，自己反覆「想→做→看結果」，直到完成。</div></div>
+<p class="src">出處：wiki/concepts/什麼是AI-Agent</p>
+</section>
+
+<section data-wiki="什麼是AI-Agent" data-facts="訂好機票">
+<h2>生活比喻</h2>
+<div class="grid"><div class="box"><b>聊天機器人</b><br>像問路時回答你的路人：說完就結束。</div><div class="box"><b>AI Agent</b><br>像幫你訂好機票、查好天氣、再把行程寄給你的助理。</div></div>
+<p class="src">出處：wiki/concepts/什麼是AI-Agent</p>
+</section>
+
+<section data-wiki="什麼是AI-Agent" data-facts="They are typically just LLMs using tools based on environmental feedback in a loop.">
+<h2>一句話定義</h2>
+<p style="font-size:clamp(20px,3vw,28px)"><b>AI Agent ＝ 會自己決定下一步、會用工具、會看結果再修正的 LLM 程式。</b></p>
+<div class="quote">“They are typically just LLMs using tools based on environmental feedback in a loop.” — Anthropic, Building effective agents</div>
+<p>翻譯：Agent 通常就是「在迴圈中，根據環境回饋使用工具的 LLM」。</p>
+<p class="src">出處：wiki/concepts/什麼是AI-Agent ← S1</p>
+</section>
+
+<section data-wiki="Agent迴圈" data-facts="gather context -> take action -> verify work -> repeat">
+<h2>核心機制①：Agent 迴圈</h2>
+<div class="loop"><span class="step">1 蒐集資訊</span><span class="arrow">→</span><span class="step">2 採取行動</span><span class="arrow">→</span><span class="step">3 檢查結果</span><span class="arrow">↺</span><span class="step">4 重複</span></div>
+<div class="quote">“gather context -> take action -> verify work -> repeat” — Claude Agent SDK</div>
+<p>比喻：像學生寫作業——查資料、寫、對答案、改錯，再繼續。</p>
+<p class="src">出處：wiki/concepts/Agent迴圈 ← S5、S1</p>
+</section>
+
+<section data-wiki="工具Tools" data-facts="搜尋網路、查天氣、執行程式、讀寫檔案">
+<h2>核心機制②：工具（Tools）</h2>
+<p>工具是 Agent 能「動手」的方法：<b>搜尋網路、查天氣、執行程式、讀寫檔案</b>。</p>
+<p>沒有工具的 LLM 只能「說」；有了工具，它才能真的「做」。給它一台電腦（終端機），就等於給了一整套工具。</p>
+<p>工具很多時，要用名稱前綴分組（namespacing），避免 Agent 選錯工具。</p>
+<p class="src">出處：wiki/concepts/工具Tools ← S3、S5</p>
+</section>
+
+<section data-wiki="Workflow與Agent的差別" data-facts="工程師事先寫好|LLM 執行時自己決定">
+<h2>Workflow 和 Agent 不一樣</h2>
+<table><tr><th></th><th>Workflow（工作流程）</th><th>Agent（代理）</th></tr>
+<tr><td>誰決定步驟</td><td>工程師事先寫好</td><td>LLM 執行時自己決定</td></tr>
+<tr><td>適合</td><td>步驟固定、可預測的任務</td><td>步驟無法事先預測的開放任務</td></tr>
+<tr><td>缺點</td><td>不夠彈性</td><td>成本高、較難預測</td></tr></table>
+<p class="src">出處：wiki/concepts/Workflow與Agent的差別 ← S1</p>
+</section>
+
+<section data-wiki="五種Workflow模式" data-facts="Prompt chaining|Routing|Parallelization|Orchestrator-workers|Evaluator-optimizer">
+<h2>五種常見的 Workflow 模式</h2>
+<div class="grid">
+<div class="box"><b>Prompt chaining 串接</b><br>一步接一步，像流水線</div>
+<div class="box"><b>Routing 分流</b><br>先分類再處理，像客服總機</div>
+<div class="box"><b>Parallelization 平行</b><br>同時做多件事再合併</div>
+<div class="box"><b>Orchestrator-workers</b><br>指揮者拆任務、分派給工人</div>
+<div class="box"><b>Evaluator-optimizer</b><br>一個寫、一個評，反覆修改</div>
+</div>
+<p class="src">出處：wiki/concepts/五種Workflow模式 ← S1</p>
+</section>
+
+<section data-wiki="上下文工程" data-facts="finite resource|smallest possible set of high-signal tokens">
+<h2>進階①：上下文是有限的</h2>
+<p><b>上下文（context）</b>＝ LLM 一次能「看到」的所有文字。<b>token</b> 是 LLM 計算文字量的單位（大約一個字或半個英文單字）。</p>
+<p>塞太多，模型反而會分心。原則是放「最少但最有用」的資訊，其他的只記住「去哪裡找」，需要時再查。</p>
+<div class="quote">“…must be treated as a finite resource…” “…the smallest possible set of high-signal tokens…”</div>
+<p class="src">出處：wiki/concepts/上下文工程 ← S4</p>
+</section>
+
+<section data-wiki="多代理系統" data-facts="90.2%|15×">
+<h2>進階②：多代理系統</h2>
+<p>一個「主 Agent」拆解問題，派好幾個「子 Agent」平行調查，最後彙整。</p>
+<div class="grid"><div class="box"><b>效果</b><br>在 Anthropic 內部研究評測中，比單一 Agent 好 <b>90.2%</b></div><div class="box"><b>代價</b><br>使用的 token 約是一般聊天的 <b>15×</b></div></div>
+<p class="src">出處：wiki/concepts/多代理系統 ← S2</p>
+</section>
+
+<section data-wiki="長時間任務" data-facts="初始化 agent|每次只做一小步並留下紀錄">
+<h2>進階③：做很久的任務</h2>
+<p>任務太長時，下一輪的 Agent 會「忘記」前面做過什麼，還可能看到一點進度就以為做完了。</p>
+<ul><li>先由<b>初始化 agent</b> 準備好環境與進度檔</li><li>之後<b>每次只做一小步並留下紀錄</b>，下一輪看紀錄接著做</li></ul>
+<p class="src">出處：wiki/concepts/長時間任務 ← S6</p>
+</section>
+
+<section data-wiki="Workflow與Agent的差別" data-facts="we recommend finding the simplest solution possible">
+<h2>什麼時候「不該」用 Agent？</h2>
+<div class="quote">“we recommend finding the simplest solution possible, and only increasing complexity when needed”</div>
+<p>Agent 比較貴、比較慢、也比較難預測。如果步驟是固定的，用一般程式或 Workflow 就好；只有在步驟無法事先規劃時，才值得用 Agent。</p>
+<p class="src">出處：wiki/concepts/Workflow與Agent的差別 ← S1</p>
+</section>
+
+<section data-wiki="Agent迴圈">
+<h2>小測驗（點開看答案）</h2>
+<details><summary>1. Agent 和一般聊天 AI 最大的差別？</summary>Agent 會在迴圈中自己決定下一步、使用工具，並根據結果修正。</details>
+<details><summary>2. Agent 迴圈的四個步驟？</summary>蒐集資訊 → 採取行動 → 檢查結果 → 重複。</details>
+<details><summary>3. 步驟固定的任務該用 Agent 嗎？</summary>通常不用。先找最簡單的解法，Workflow 或一般程式就夠了。</details>
+</section>
+
+<section data-wiki="index">
+<h2>總結＋資料來源</h2>
+<ul><li>Agent ＝ LLM ＋ 工具 ＋ 迴圈（看結果再修正）</li><li>Workflow 是寫死的流程；Agent 是 LLM 自己決定流程</li><li>上下文有限、多代理很耗 token、長任務要留紀錄</li><li>能簡單就簡單</li></ul>
+<p class="src">S1 Building effective agents · S2 How we built our multi-agent research system · S3 Writing effective tools for agents · S4 Effective context engineering for AI agents · S5 Building agents with the Claude Agent SDK · S6 Effective harnesses for long-running agents（皆為 Anthropic Engineering Blog）</p>
+</section>
+
+<nav><button id="prev" aria-label="上一頁">←</button><span id="count"></span><button id="next" aria-label="下一頁">→</button></nav>
+</div>
+<script>
+const S=[...document.querySelectorAll('section')];let i=0;
+function go(n){i=Math.max(0,Math.min(S.length-1,n));S.forEach((s,k)=>s.classList.toggle('on',k===i));document.getElementById('count').textContent=(i+1)+' / '+S.length;document.getElementById('prog').style.width=((i+1)/S.length*100)+'%';}
+document.getElementById('prev').onclick=()=>go(i-1);document.getElementById('next').onclick=()=>go(i+1);
+addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e.key==='ArrowLeft')go(i-1);});
+go(0);
+</script>
+</body>
+</html>
