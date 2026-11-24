@@ -1,0 +1,158 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI Agent Wiki</title>
+<style>:root{--bg:#f7f6f2;--card:#fff;--ink:#1d1d1f;--muted:#5f6368;--accent:#0f766e;--line:#e4e2dc;--q:#f1efe9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15161a;--card:#1f2026;--ink:#ececec;--muted:#a3a6ad;--accent:#2dd4bf;--line:#33353d;--q:#2a2b31}}
+:root[data-theme="dark"]{--bg:#15161a;--card:#1f2026;--ink:#ececec;--muted:#a3a6ad;--accent:#2dd4bf;--line:#33353d;--q:#2a2b31}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;line-height:1.65}
+.wrap{max-width:900px;margin:0 auto;padding:16px}h1{font-size:28px}nav{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 20px}nav a{font-size:14px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;text-decoration:none;color:var(--accent);background:var(--card)}
+article{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:14px 0;overflow-x:auto}.path{font:12px monospace;color:var(--muted)}
+h2{margin:.2em 0 .5em;color:var(--accent)}q{background:var(--q);padding:1px 4px;border-radius:4px;font-size:.92em}.tag{font:12px monospace;background:var(--accent);color:var(--card);padding:1px 6px;border-radius:4px}
+table{border-collapse:collapse}td{border:1px solid var(--line);padding:6px 10px}a{color:var(--accent)}p{margin:.35em 0}pre{white-space:pre-wrap;font-size:13px;background:var(--q);padding:12px;border-radius:8px}</style></head>
+<body><div class="wrap"><h1>AI Agent LLM Wiki</h1><p>6 篇原始資料（raw/S1–S6）→ LLM 依 SCHEMA 整理成 14 頁互相連結的 wiki。每個 <span class="tag">S#</span> 引用都經 lint 程式確認可在原文逐字找到。</p>
+<nav><a href="#index">index</a><a href="#Agent迴圈">Agent迴圈</a><a href="#Workflow與Agent的差別">Workflow與Agent的差別</a><a href="#上下文工程">上下文工程</a><a href="#五種Workflow模式">五種Workflow模式</a><a href="#什麼是AI-Agent">什麼是AI-Agent</a><a href="#多代理系統">多代理系統</a><a href="#工具Tools">工具Tools</a><a href="#長時間任務">長時間任務</a><a href="#S1_building-effective-agents">S1_building-effective-agents</a><a href="#S2_multi-agent-research-system">S2_multi-agent-research-system</a><a href="#S3_writing-tools-for-agents">S3_writing-tools-for-agents</a><a href="#S4_effective-context-engineering">S4_effective-context-engineering</a><a href="#S5_claude-agent-sdk">S5_claude-agent-sdk</a><a href="#S6_effective-harnesses">S6_effective-harnesses</a><a href="#log">log</a><a href="#schema">SCHEMA</a></nav><article id="index"><div class="path">wiki/index.md</div><h2>Index（AI Agent LLM Wiki）</h2>
+<h3>概念頁</h3>
+<p class="li" style="margin-left:0px">• <a href="#什麼是AI-Agent">什麼是AI-Agent</a></p>
+<p class="li" style="margin-left:0px">• <a href="#Workflow與Agent的差別">Workflow與Agent的差別</a></p>
+<p class="li" style="margin-left:0px">• <a href="#五種Workflow模式">五種Workflow模式</a></p>
+<p class="li" style="margin-left:0px">• <a href="#Agent迴圈">Agent迴圈</a></p>
+<p class="li" style="margin-left:0px">• <a href="#工具Tools">工具Tools</a></p>
+<p class="li" style="margin-left:0px">• <a href="#上下文工程">上下文工程</a></p>
+<p class="li" style="margin-left:0px">• <a href="#多代理系統">多代理系統</a></p>
+<p class="li" style="margin-left:0px">• <a href="#長時間任務">長時間任務</a></p>
+<h3>資料來源</h3>
+<p class="li" style="margin-left:0px">• <a href="#S1_building-effective-agents">S1_building-effective-agents</a></p>
+<p class="li" style="margin-left:0px">• <a href="#S2_multi-agent-research-system">S2_multi-agent-research-system</a></p>
+<p class="li" style="margin-left:0px">• <a href="#S3_writing-tools-for-agents">S3_writing-tools-for-agents</a></p>
+<p class="li" style="margin-left:0px">• <a href="#S4_effective-context-engineering">S4_effective-context-engineering</a></p>
+<p class="li" style="margin-left:0px">• <a href="#S5_claude-agent-sdk">S5_claude-agent-sdk</a></p>
+<p class="li" style="margin-left:0px">• <a href="#S6_effective-harnesses">S6_effective-harnesses</a></p></article><article id="Agent迴圈"><div class="path">wiki/Agent迴圈.md</div><h2>Agent 迴圈（Agent Loop）</h2>
+<p>Agent 的核心是一個重複的迴圈：</p>
+<p class="li" style="margin-left:0px">• 蒐集資訊（gather context）</p>
+<p class="li" style="margin-left:0px">• 採取行動（take action，例如呼叫工具）</p>
+<p class="li" style="margin-left:0px">• 檢查結果（verify work）</p>
+<p class="li" style="margin-left:0px">• 重複，直到完成</p>
+<p class="li" style="margin-left:0px">• <q>gather context -&gt; take action -&gt; verify work -&gt; repeat</q> <span class="tag">S5</span></p>
+<p class="li" style="margin-left:0px">• <q>environmental feedback in a loop</q> <span class="tag">S1</span>：每一輪都根據「環境回饋」（工具結果、錯誤訊息）調整。</p>
+<p><b>比喻：</b> 像學生寫作業：查資料→寫→對答案→改錯，再繼續。</p>
+<p>延伸：<a href="#工具Tools">工具Tools</a>、<a href="#長時間任務">長時間任務</a></p></article><article id="Workflow與Agent的差別"><div class="path">wiki/Workflow與Agent的差別.md</div><h2>Workflow 與 Agent 的差別</h2>
+<table><tr><td></td><td>Workflow（工作流程）</td><td>Agent（代理）</td></tr>
+<tr><td>誰決定步驟</td><td>工程師事先寫好</td><td>LLM 執行時自己決定</td></tr>
+<tr><td>適合</td><td>步驟固定、可預測的任務</td><td>步驟無法事先預測的開放任務</td></tr>
+<tr><td>缺點</td><td>不夠彈性</td><td>成本高、較難預測</td></tr>
+</table>
+<p class="li" style="margin-left:0px">• <q>Workflows are systems where LLMs and tools are orchestrated through predefined code paths.</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:0px">• 不一定要用 agent：<q>we recommend finding the simplest solution possible, and only increasing complexity when needed</q> <span class="tag">S1</span></p>
+<p>延伸：<a href="#五種Workflow模式">五種Workflow模式</a>、<a href="#什麼是AI-Agent">什麼是AI-Agent</a></p></article><article id="上下文工程"><div class="path">wiki/上下文工程.md</div><h2>上下文工程（Context Engineering）</h2>
+<p>上下文（context）＝ LLM 一次能「看到」的所有文字，包含指令、對話、工具結果。</p>
+<p class="li" style="margin-left:0px">• 它是有限的：<q>Context, therefore, must be treated as a finite resource with diminishing marginal returns.</q> <span class="tag">S4</span></p>
+<p class="li" style="margin-left:0px">• 原則：只放最需要的：<q>finding the smallest possible set of high-signal tokens</q> <span class="tag">S4</span></p>
+<p class="li" style="margin-left:0px">• 技巧：只記住「去哪裡找」，需要時再查：<q>maintain lightweight identifiers (file paths, stored queries, web links, etc.)</q> <span class="tag">S4</span></p>
+<p>延伸：<a href="#長時間任務">長時間任務</a>、<a href="#多代理系統">多代理系統</a></p></article><article id="五種Workflow模式"><div class="path">wiki/五種Workflow模式.md</div><h2>五種 Workflow 模式（S1）</h2>
+<p class="li" style="margin-left:0px">• <b>Prompt chaining（串接）</b>：一步接一步，上一步輸出是下一步輸入。像工廠流水線。</p>
+<p class="li" style="margin-left:0px">• <b>Routing（分流）</b>：先分類，再交給專門處理的流程。像客服總機。</p>
+<p class="li" style="margin-left:0px">• <b>Parallelization（平行）</b>：同時做多件事再合併。</p>
+<p class="li" style="margin-left:0px">• <b>Orchestrator-workers（指揮者＋工人）</b>：一個 LLM 拆任務、分派給其他 LLM。<a href="#多代理系統">多代理系統</a>就是這種。</p>
+<p class="li" style="margin-left:0px">• <b>Evaluator-optimizer（評審＋改進）</b>：一個寫、一個評，反覆修改。</p>
+<p class="li" style="margin-left:0px">• <q>Building block: The augmented LLM</q> <span class="tag">S1</span>——以上都建立在「LLM＋檢索＋工具＋記憶」這個積木上。</p>
+<p>延伸：<a href="#Workflow與Agent的差別">Workflow與Agent的差別</a></p></article><article id="什麼是AI-Agent"><div class="path">wiki/什麼是AI-Agent.md</div><h2>什麼是 AI Agent？</h2>
+<p><b>一句話：</b> AI Agent 就是「會自己決定下一步、會用工具、會看結果再修正」的 LLM 程式。</p>
+<p class="li" style="margin-left:0px">• LLM（大型語言模型）：像 ChatGPT、Claude 這種「讀文字、寫文字」的 AI。</p>
+<p class="li" style="margin-left:0px">• 一般聊天：你問一句，它答一句，就結束。</p>
+<p class="li" style="margin-left:0px">• Agent：拿到一個目標後，自己反覆「想→做→看結果」，直到完成。</p>
+<p class="li" style="margin-left:16px">• <q>They are typically just LLMs using tools based on environmental feedback in a loop.</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:16px">• <q>are systems where LLMs dynamically direct their own processes and tool usage</q> <span class="tag">S1</span></p>
+<p><b>生活比喻：</b> 聊天機器人像「問路時回答你的路人」；Agent 像「幫你訂好機票、查好天氣、再把行程寄給你的助理」。</p>
+<p>延伸：<a href="#Workflow與Agent的差別">Workflow與Agent的差別</a>、<a href="#Agent迴圈">Agent迴圈</a>、<a href="#工具Tools">工具Tools</a></p></article><article id="多代理系統"><div class="path">wiki/多代理系統.md</div><h2>多代理系統（Multi-agent）</h2>
+<p>多個 agent 分工合作：一個「主 agent」拆解問題，派「子 agent」平行調查。</p>
+<p class="li" style="margin-left:0px">• <q>uses a multi-agent architecture with an orchestrator-worker pattern</q> <span class="tag">S2</span></p>
+<p class="li" style="margin-left:0px">• 效果：<q>outperformed single-agent Claude Opus 4 by 90.2% on our internal research eval</q> <span class="tag">S2</span></p>
+<p class="li" style="margin-left:0px">• 代價：<q>multi-agent systems use about 15× more tokens than chats</q> <span class="tag">S2</span></p>
+<p>延伸：<a href="#五種Workflow模式">五種Workflow模式</a>、<a href="#上下文工程">上下文工程</a></p></article><article id="工具Tools"><div class="path">wiki/工具Tools.md</div><h2>工具（Tools）</h2>
+<p>工具是 agent 能「動手」的方法，例如搜尋網路、查天氣、執行程式、讀寫檔案。</p>
+<p class="li" style="margin-left:0px">• 工具是給 agent 用的新型軟體：<q>Tools are a new kind of software which reflects a contract between deterministic systems and non-deterministic agents.</q> <span class="tag">S3</span></p>
+<p class="li" style="margin-left:0px">• 給 agent 一台電腦，就等於給它一整套工具：<q>by giving Claude access to the user’s computer (via the terminal)</q> <span class="tag">S5</span></p>
+<p class="li" style="margin-left:0px">• 工具很多時，用名稱前綴分組（namespacing）避免選錯：<q>Namespacing (grouping related tools under common prefixes)</q> <span class="tag">S3</span></p>
+<p>延伸：<a href="#Agent迴圈">Agent迴圈</a></p></article><article id="長時間任務"><div class="path">wiki/長時間任務.md</div><h2>長時間任務的挑戰</h2>
+<p>任務做很久時，對話會超過上下文上限，下一次「醒來」的 agent 不記得之前做過什麼。</p>
+<p class="li" style="margin-left:0px">• 對策一：第一次先由「初始化 agent」準備環境：<q>an initializer agent that sets up the environment on the first run</q> <span class="tag">S6</span></p>
+<p class="li" style="margin-left:0px">• 常見錯誤：看到有些進度就以為做完：<q>see that progress had been made, and declare the job done</q> <span class="tag">S6</span></p>
+<p class="li" style="margin-left:0px">• 對策二：每次只做一小步並留下紀錄：<q>Every subsequent session asks the model to make incremental progress, then leave structured updates.</q> <span class="tag">S6</span></p>
+<p>延伸：<a href="#Agent迴圈">Agent迴圈</a>、<a href="#上下文工程">上下文工程</a></p></article><article id="S1_building-effective-agents"><div class="path">wiki/S1_building-effective-agents.md</div><h2>S1 Building effective agents（Anthropic）</h2>
+<p>原始檔：raw/01_building-effective-agents.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• 區分兩種「agentic system」：workflow（流程由程式寫死）與 agent（由 LLM 自己決定下一步）。</p>
+<p class="li" style="margin-left:16px">• <q>Workflows are systems where LLMs and tools are orchestrated through predefined code paths.</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:16px">• <q>are systems where LLMs dynamically direct their own processes and tool usage</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:0px">• Agent 的本質很單純：<q>They are typically just LLMs using tools based on environmental feedback in a loop.</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:0px">• 基本積木是「強化版 LLM」：<q>Building block: The augmented LLM</q> <span class="tag">S1</span></p>
+<p class="li" style="margin-left:0px">• 五種常見 workflow：prompt chaining、routing、parallelization、orchestrator-workers、evaluator-optimizer。</p>
+<p class="li" style="margin-left:0px">• 建議先從最簡單的做法開始：<q>we recommend finding the simplest solution possible, and only increasing complexity when needed</q> <span class="tag">S1</span></p>
+<p>相關：<a href="#什麼是AI-Agent">什麼是AI-Agent</a>、<a href="#Workflow與Agent的差別">Workflow與Agent的差別</a>、<a href="#五種Workflow模式">五種Workflow模式</a></p></article><article id="S2_multi-agent-research-system"><div class="path">wiki/S2_multi-agent-research-system.md</div><h2>S2 How we built our multi-agent research system（Anthropic）</h2>
+<p>原始檔：raw/02_multi-agent-research-system.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• 採用「指揮者＋工人」架構：<q>uses a multi-agent architecture with an orchestrator-worker pattern</q> <span class="tag">S2</span></p>
+<p class="li" style="margin-left:0px">• 多代理在研究型任務表現較好：<q>outperformed single-agent Claude Opus 4 by 90.2% on our internal research eval</q> <span class="tag">S2</span></p>
+<p class="li" style="margin-left:0px">• 代價是很耗 token：<q>multi-agent systems use about 15× more tokens than chats</q> <span class="tag">S2</span></p>
+<p>相關：<a href="#多代理系統">多代理系統</a>、<a href="#五種Workflow模式">五種Workflow模式</a></p></article><article id="S3_writing-tools-for-agents"><div class="path">wiki/S3_writing-tools-for-agents.md</div><h2>S3 Writing effective tools for agents（Anthropic）</h2>
+<p>原始檔：raw/03_writing-tools-for-agents.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• 工具是寫給「不確定的 agent」使用的新型軟體：<q>Tools are a new kind of software which reflects a contract between deterministic systems and non-deterministic agents.</q> <span class="tag">S3</span></p>
+<p class="li" style="margin-left:0px">• 工具多時要分組命名：<q>Namespacing (grouping related tools under common prefixes)</q> <span class="tag">S3</span></p>
+<p>相關：<a href="#工具Tools">工具Tools</a></p></article><article id="S4_effective-context-engineering"><div class="path">wiki/S4_effective-context-engineering.md</div><h2>S4 Effective context engineering for AI agents（Anthropic）</h2>
+<p>原始檔：raw/04_effective-context-engineering.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• 上下文（context）是有限資源：<q>Context, therefore, must be treated as a finite resource with diminishing marginal returns.</q> <span class="tag">S4</span></p>
+<p class="li" style="margin-left:0px">• 好的做法是放最少但最有用的資訊：<q>finding the smallest possible set of high-signal tokens</q> <span class="tag">S4</span></p>
+<p class="li" style="margin-left:0px">• 需要時再查（just in time）：<q>maintain lightweight identifiers (file paths, stored queries, web links, etc.)</q> <span class="tag">S4</span></p>
+<p>相關：<a href="#上下文工程">上下文工程</a></p></article><article id="S5_claude-agent-sdk"><div class="path">wiki/S5_claude-agent-sdk.md</div><h2>S5 Building agents with the Claude Agent SDK（Anthropic）</h2>
+<p>原始檔：raw/05_claude-agent-sdk.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• Agent 的工作迴圈：<q>gather context -&gt; take action -&gt; verify work -&gt; repeat</q> <span class="tag">S5</span></p>
+<p class="li" style="margin-left:0px">• 給 agent 一台電腦（終端機）就能做很多事：<q>by giving Claude access to the user’s computer (via the terminal)</q> <span class="tag">S5</span></p>
+<p>相關：<a href="#Agent迴圈">Agent迴圈</a>、<a href="#工具Tools">工具Tools</a></p></article><article id="S6_effective-harnesses"><div class="path">wiki/S6_effective-harnesses.md</div><h2>S6 Effective harnesses for long-running agents（Anthropic）</h2>
+<p>原始檔：raw/06_effective-harnesses.md</p>
+<h3>重點</h3>
+<p class="li" style="margin-left:0px">• 長時間任務會跨越多個上下文視窗，用兩種角色解決：<q>an initializer agent that sets up the environment on the first run</q> <span class="tag">S6</span></p>
+<p class="li" style="margin-left:0px">• 常見失敗：太早宣布完成：<q>see that progress had been made, and declare the job done</q> <span class="tag">S6</span></p>
+<p class="li" style="margin-left:0px">• 對策是每次只做一點並留紀錄：<q>Every subsequent session asks the model to make incremental progress, then leave structured updates.</q> <span class="tag">S6</span></p>
+<p>相關：<a href="#長時間任務">長時間任務</a>、<a href="#Agent迴圈">Agent迴圈</a></p></article><article id="log"><div class="path">wiki/log.md</div><h2>Log（實際執行紀錄，2026-11-24）</h2>
+<h3>[討論] 確定範圍</h3>
+<p class="li" style="margin-left:0px">• 主題：AI Agent 是什麼；對象：完全沒接觸過的人</p>
+<p class="li" style="margin-left:0px">• 決定資料來源：Anthropic Engineering Blog 6 篇（同一來源、可逐字核對）</p>
+<p class="li" style="margin-left:0px">• 先列出要回答的問題：定義？怎麼運作？和 workflow 差在哪？什麼時候不要用？</p>
+<h3>[ingest] 取得資料</h3>
+<p class="li" style="margin-left:0px">• 嘗試 7 個網站，只有 anthropic.com、github 連得到（arxiv、wikipedia、lilianweng 被網路擋）→ 改用 Anthropic 6 篇</p>
+<p class="li" style="margin-left:0px">• HTML → Markdown 清理（去掉選單、程式碼）→ raw/S1–S6</p>
+<h3>[ingest] 建立 wiki</h3>
+<p class="li" style="margin-left:0px">• 6 頁 source 摘要 + 8 頁 concept（含 index），共 14 頁 wiki + index/log</p>
+<h3>[lint] 第 1 次：5 個問題 ✗</h3>
+<p class="li" style="margin-left:0px">• 原因：內文強調用的中文「」與引用格式「…」[S#] 撞在一起，檢查程式把兩段黏成一個引用</p>
+<p class="li" style="margin-left:0px">• 另外發現：原文 HTML 轉換後出現「Agents , on the other」多一個空格，直接整句引用會比對失敗 → 改引用不含該處的片段</p>
+<p class="li" style="margin-left:0px">• 修正：引用規則改成「不可包含「」的最短片段」</p>
+<h3>[lint] 第 2 次：15 頁、37 個引用 → 0 個問題 ✓</h3>
+<h3>[query → 產生簡報] 15 頁，每頁標註 data-wiki（出處頁）與 data-facts（需核對的事實）</h3>
+<h3>[check_slides] 第 1 次：2 個問題 ✗</h3>
+<p class="li" style="margin-left:0px">• 「LLM」在第 1 頁出現，解釋在第 3 頁</p>
+<p class="li" style="margin-left:0px">• 「上下文」在第 2 頁出現，解釋在第 10 頁</p>
+<p class="li" style="margin-left:0px">• 修正：第 1、2 頁改用白話，不先丟名詞</p>
+<h3>[check_slides] 第 2 次：15 頁 → 0 個問題 ✓（事實對照、名詞順序、桌機 1280px／手機 390px 版面皆通過）</h3></article><article id="schema"><div class="path">SCHEMA.md</div><pre># LLM Wiki 規則（SCHEMA）
+
+主題：AI Agent 是什麼？——給完全沒接觸過的人
+維護者：LLM（依本檔規則維護），人類負責選資料與審核
+
+## 資料夾
+- `raw/`：原始資料，只讀不改（S1–S6）
+- `wiki/sources/`：每篇資料一頁摘要
+- `wiki/concepts/`：概念頁，整合多篇資料
+- `wiki/index.md`：所有頁面目錄；`wiki/log.md`：每次操作紀錄
+
+## 寫作規則
+1. 每個重要論點要附原文引用，格式：「英文原句片段」[S編號]，片段必須能在 raw/ 中逐字找到。
+2. 頁面之間用 [[頁面名稱]] 互連，連結目標必須存在。
+3. 第一次出現的專有名詞要用一句白話解釋。
+4. 新資料 ingest 時：寫 source 頁 → 更新相關 concept 頁 → 更新 index → 寫 log。
+
+## 三種操作
+- ingest：讀一篇 raw → 更新 wiki
+- query：從 wiki（不是 raw）回答問題或產生簡報
+- lint：檢查引用是否存在、連結是否斷掉、是否有孤立頁面
+</pre></article></div></body></html>
